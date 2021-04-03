@@ -37,15 +37,15 @@ namespace WindowsFormsApp22
         }
         void LabelUpdate()
         {
-            label1.Text = number.ToString();
-            listBox2.Items.RemoveAt(0);
-            listBox2.Height -= 13;
+            label1.Text = Number.ToString();
         }
         public Form1()
         {
             InitializeComponent();
             PropertyChanged += Form1_PropertyChanged;
             Thread.CurrentThread.Name = "Main";
+            listBox1.DisplayMember = "Name";
+            listBox2.DisplayMember = "Name";
         }
 
         private void Form1_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -60,15 +60,14 @@ namespace WindowsFormsApp22
             listBox1.Height = listBox1.Height + 13;
             listBox1.Items.Add(thread);
         }
+
         void Increment()
         {
             semaphore.WaitOne();
-            //MessageBox.Show(Thread.CurrentThread.Name, "Increment");
             threadName = Thread.CurrentThread.Name;
             if (InvokeRequired)
                 Invoke((MethodInvoker)(() => { ListBox3Increment(threadName); }));
-            //listBox2.Items.Remove(listBox2.Items.Contains(Thread.CurrentThread.Name));
-            Thread.Sleep(3000);
+            Thread.Sleep(5000);
             Number++;
             if(InvokeRequired)
             {
@@ -78,9 +77,17 @@ namespace WindowsFormsApp22
         }
         void ListBox3Increment(string t)
         {
-            //MessageBox.Show(t, "ListBox3Increment");
             listBox3.Items.Add(t);
             listBox3.Height += 13;
+            foreach(Thread thr in listBox2.Items)
+            {
+                if(thr.Name == t)
+                {
+                    listBox2.Items.Remove(thr);
+                    listBox2.Height -= 13;
+                    break;
+                }
+            }
         }
         void ListBox3Decrement()
         {
@@ -102,13 +109,6 @@ namespace WindowsFormsApp22
                     t.Start();
                 }
             }
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            listBox1.DisplayMember = "Name";
-            listBox2.DisplayMember = "Name";
-            //listBox3.DisplayMember = "Name";
         }
     }
 }
